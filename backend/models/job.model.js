@@ -33,21 +33,21 @@ const jobSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    company: {//a reference to the company doc. it uses mongoose.Schema.Types.ObjectId to store the id of the company doc: purpose-> to know which company has posted the job
+    company: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',
         required: true
-    },
-    created_by: {//purpose-> to know which user has posted the job
+    },//a reference to the company doc. it uses mongoose.Schema.Types.ObjectId to store the id of the company doc: purpose-> to know which company has posted the job
+    created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-    applications: [//purpose-> to know which applications have been submitted for this job
+    },//purpose-> to know which user has posted the job
+    applications: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Application',
         }
-    ]
+    ]//purpose-> to know which applications have been submitted for this job
 },{timestamps:true});
 export const Job = mongoose.model("Job", jobSchema);
