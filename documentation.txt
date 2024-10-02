@@ -1,0 +1,35 @@
+---------------------Middlewares---------------------
+Here are some must-have middlewares for a starting project:
+
+1. Body Parsing Middleware
+
+express.json(): Parses incoming requests with JSON payloads.
+express.urlencoded({ extended: true }): Parses URL-encoded data.
+
+Why?: You need to handle incoming request data, such as JSON from API clients or form data from web forms.
+
+const express = require('express');
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+2. CORS Middleware
+cors: Allows your API to be accessed from different domains.
+
+Why?: To enable cross-origin requests, especially useful when working with a frontend hosted on a different domain or port.
+
+const cors = require('cors');
+app.use(cors());
+
+3.Cookie and Session Middleware
+
+cookie-parser: Parses cookies attached to client requests.
+express-session: Manages session data.
+
+Why?: Useful for managing user sessions in a web app.
+
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+app.use(cookieParser());
+app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
