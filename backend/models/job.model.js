@@ -32,7 +32,7 @@ const jobSchema = new mongoose.Schema({
     position: {
         type: Number,
         required: true
-    },
+    },//the number of positions available
     company: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Company',

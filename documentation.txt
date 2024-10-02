@@ -37,3 +37,58 @@ app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: t
 
 ----------------------------Models---------------------------------
 4 models will be created -> user,jobs,compnay,application
+
+MongoDB supports two main types of relationships: embedded documents (embedding) and references (linking).
+
+1. Embedded Documents (Embedding/Nesting)
+
+In this model, related data is stored inside the same document. This is a denormalized approach where all related data is kept together in one place, making data retrieval faster but can sometimes lead to data duplication.
+
+2. References (Linking)
+
+In this model, related data is stored in separate collections, and documents reference each other using a key (typically the _id). This is a normalized approach similar to foreign keys in relational databases.
+
+Here, we will create separate models for users and addresses, and store references using MongoDB’s ObjectId to link the two collections.
+
+//eg.
+
+const mongoose = require('mongoose');
+
+// Define the Address schema
+const addressSchema = new mongoose.Schema({
+  street: String,
+  city: String,
+  state: String,
+  postalCode: String,
+  country: String
+});
+
+// Create the Address model
+const Address = mongoose.model('Address', addressSchema);
+
+// Define the User schema, referencing the Address model
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  address: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Address'  // Refers to the Address model
+  }
+});
+
+// Create the User model
+const User = mongoose.model('User', userSchema);
+
+module.exports = { User, Address };
+
+->The address is stored in a separate collection and linked using ObjectId. This normalizes the data and avoids duplication, but querying may require joins (i.e., populate in Mongoose).
+
+->Embedding is ideal for small, related data that doesn’t change frequently.
+Referencing is better for data that needs to be shared across multiple documents or when the data is large and frequently updated.
