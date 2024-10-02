@@ -33,3 +33,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 app.use(cookieParser());
 app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+
+
+----------------------------Models---------------------------------
+4 models will be created -> user,jobs,compnay,application
