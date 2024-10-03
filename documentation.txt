@@ -1,4 +1,6 @@
 ---------------------Middlewares---------------------
+Middlewares is like a police that verifies between req and res between client and server
+
 Here are some must-have middlewares for a starting project:
 
 1. Body Parsing Middleware
@@ -92,3 +94,128 @@ module.exports = { User, Address };
 
 ->Embedding is ideal for small, related data that doesn’t change frequently.
 Referencing is better for data that needs to be shared across multiple documents or when the data is large and frequently updated.
+
+-----------------------------Controllers-------------------------
+Controllers are components that handle the logic for responding to user input, often in the context of MVC (Model-View-Controller) architecture.
+
+MVC Architecture:
+
+Model: Represents the data and business logic.
+
+View: Handles the display of information (UI/UX).
+
+Controller: Acts as an intermediary between the Model and the View. It listens to user input (like HTTP requests), processes that input (sometimes interacting with the Model), and then determines what the View should display.
+
+Role of Controllers:
+
+=>Handle user input: When a user performs an action (e.g., submits a form or clicks a button), the controller receives this action as an event or HTTP request.
+
+=>Process the input: It processes the data, which may involve validating the data, fetching or updating information from the Model (database, services, etc.).
+
+=>Select the view: Once the necessary data is processed, the controller determines which view (template or page) to render and what data should be sent to that view for display.
+
+---------------------------MongoDB----------------------------------
+
+->Search methods in mongodb are find, findById, findByIdAndUpdate ,findByIdAndDelete, findOneAndUpdate, findOneAndDelete;
+
+--------------------------Other libraries---------------------------
+->Bcryptjs is a JavaScript library used for hashing passwords, ensuring secure storage of sensitive user information in applications. It helps protect passwords by converting them into a fixed-length string (called a hash) that can't be easily reversed. Even if attackers access the database, they can’t directly recover the original passwords.
+
+
+->Jsonwebtoken:
+A token is a small piece of data used for authentication and authorization. It helps ensure secure communication between a client (like a web browser or mobile app) and a server, particularly for managing sessions without storing sensitive information directly.
+
+Why tokens are used?
+1. authentication
+2. authorization
+3. Stateless sessions:Tokens help in making the communication stateless. Once the server sends a token to the client, the client stores it (usually in local storage or cookies) and sends it with each request. The server doesn’t need to store session data, making scaling easier.
+
+How tokens are used?
+(here JWT: A popular token format often used in RESTful APIs. It’s a compact, URL-safe token that contains three parts: header, payload, and signature.)
+
+Step 1 :
+
+User Login and Token Generation:
+
+The user sends a request with their credentials (username, password) to the server.
+
+The server verifies the credentials. If valid, it creates a token (often a JWT) containing user information and a signature.
+
+The server sends this token back to the client in the response.
+The client stores the token typically in local storage or cookies
+
+eg. ->
+   
+   const jwt = require('jsonwebtoken');
+
+// Generate a token
+const generateToken = (user) => {
+  // Create a token with user data and secret key
+  return jwt.sign({ id: user.id, username: user.username }, 'your_secret_key', { expiresIn: '1h' });
+};
+
+// When the user logs in
+const token = generateToken({ id: 1, username: 'vishal' });
+console.log('Generated Token:', token);
+
+
+Step 2:Client Sends Token with Requests:
+
+For every subsequent request (e.g., fetching user data, making API calls), the client attaches the token in the request headers.
+
+This ensures the server knows who the client is, without requiring the client to send credentials every time.
+
+eg.->(sending token in request header)
+
+const token = 'your_jwt_token';
+
+fetch('https://api.example.com/userdata', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+
+
+Step 3 : Token Verification by the Server
+
+When the server receives the token in the request headers, it verifies the token to ensure it hasn’t been tampered with or expired.
+
+If the token is valid, the server processes the request; if not, the server returns an error (e.g., 401 Unauthorized).
+
+eg.->(using express.js)
+
+const jwt = require('jsonwebtoken');
+
+// Middleware to verify token
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'].split(' ')[1]; // Extract the token from "Bearer token"
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  jwt.verify(token, 'your_secret_key', (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+    req.user = decoded; // Attach user info from token to the request
+    next(); // Proceed to the next middleware or route handler
+  });
+};
+
+// Protected route
+app.get('/protected', verifyToken, (req, res) => {
+  res.json({ message: 'This is a protected route', user: req.user });
+});
+
+
+Note->Token Expiration and Refresh:
+
+Tokens often have an expiration time for security reasons (e.g., 1h or 24h).
+
+If the token has expired, the server can reject the request, and the client may need to log in again or use a refresh token to obtain a new access token without re-entering credentials.
+
