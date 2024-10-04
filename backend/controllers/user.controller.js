@@ -143,16 +143,9 @@ export const updateProfile = async (req,res)=>{
         const fileUri = getDataUri(file);
         const cloudResponse = await cloudinary.uploader.upload(fileUri.content); */
 
-        if (!fullname || !email || !phoneNumber || !bio || !skills) {
-            return res.status(400).json({
-                message:"All fields are required",
-                success:false
-            });
-        }
-
         let skillsArray;
         if(skills){
-            skillsArray = skills.split(",")
+            skillsArray = skills.split(",");
         }
         
         //check if the user already exists in the database if it does not then who is updating the profile

@@ -40,6 +40,7 @@ app.use('/api/v1/user',userRoute);
 
 
 
+
     app.listen(PORT,()=>{
         connectDB();
         console.log(`Server started on port number ${PORT}`);
