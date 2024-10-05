@@ -118,6 +118,28 @@ Role of Controllers:
 
 ->Search methods in mongodb are find, findById, findByIdAndUpdate ,findByIdAndDelete, findOneAndUpdate, findOneAndDelete;
 
+const company = await Company.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+Company.findByIdAndUpdate():
+
+This is a Mongoose method used to find a document (in this case, a company) by its ID and update it with new data.
+req.params.id:
+
+This accesses the id parameter from the URL (for example, /companies/123). This ID is used to find the specific company to update.
+updateData:
+
+This is an object that contains the data you want to update in the company document.
+{ new: true }:
+
+This option tells Mongoose to return the updated document (the modified version) instead of the original one.
+await:
+
+This is used to wait for the operation to complete, as findByIdAndUpdate is an asynchronous function that returns a promise.
+
+---------------------------Authentication-----------------------
+An authentication middleware in a Node.js application using JWT (JSON Web Tokens). It verifies if a user is authenticated by checking for a valid JWT token in the cookies and ensures that only authenticated users can access certain routes.
+
+->jwt is the library used to handle JSON Web Tokens. This allows the app to generate, verify, and decode JWTs, which are used for securely transmitting information between the client and server.
 --------------------------Other libraries---------------------------
 ->Bcryptjs is a JavaScript library used for hashing passwords, ensuring secure storage of sensitive user information in applications. It helps protect passwords by converting them into a fixed-length string (called a hash) that can't be easily reversed. Even if attackers access the database, they can’t directly recover the original passwords.
 
@@ -219,3 +241,25 @@ Tokens often have an expiration time for security reasons (e.g., 1h or 24h).
 
 If the token has expired, the server can reject the request, and the client may need to log in again or use a refresh token to obtain a new access token without re-entering credentials.
 
+
+
+**********x
+How params work:
+When you're working with routes in Express, you can define route parameters (dynamic segments in the URL) that can be accessed via req.params in your route handler. These parameters allow you to capture parts of the URL and use them in your logic.
+
+eg.->
+app.get('/users/:id', (req, res) => {
+  const userId = req.params.id; // Access the `id` parameter from the URL
+  res.send(`User ID is: ${userId}`);
+});
+
+-----------------------Problems------------------------------
+I could not add .env file to .gitignore file bcuz my .env file was being tracked by git and was interering with the actual working a .gitignore file 
+
+Sol->
+
+Reason:
+Even though you added the files to .gitignore, Git continues to track any files that were committed before being added to .gitignore. Running git rm --cached untracks them, and afterwards, the .gitignore will work as expected.
+
+  git rm --cached .env
+  git commit -m "Removed .env files from tracking"
