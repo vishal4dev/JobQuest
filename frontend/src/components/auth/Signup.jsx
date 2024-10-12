@@ -9,6 +9,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { USER_API_ENDPOINT } from '../../utils/constant'
 import axios from 'axios'
 import { toast } from 'sonner'
+import { useSelector , useDispatch} from 'react-redux'
+import {setLoading} from '@/redux/authSlice'
+
 
 
 
@@ -21,8 +24,10 @@ const Signup = () => {
         role: "",
         file: ""
     });
-
+    
+    const {loading} = userSelector(store=>store.auth);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
 
     const changeEventHandler = (e) =>{
@@ -49,6 +54,8 @@ const Signup = () => {
         }
 
         try {
+             
+            dispatch(setLoading(true));
             const res = await axios.post(`${USER_API_ENDPOINT}/register`,formData,{
                 headers:{
                     'Content-Type':'multipart/form-data',
@@ -63,12 +70,11 @@ const Signup = () => {
             console.log(error);
             toast.error(error.response.data.message);
         } finally{
-            
+            dispatch(setLoading(false));
         }
 
     }
 
-    const loading=false;
   return (
     <div>
         <Navbar/>

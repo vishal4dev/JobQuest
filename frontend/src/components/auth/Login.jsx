@@ -5,10 +5,12 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { RadioGroup } from '../ui/radio-group'
 import { Loader2 } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate} from 'react-router-dom'
 import { USER_API_ENDPOINT } from '../../utils/constant'
 import axios from 'axios'
 import { toast } from 'sonner'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLoading } from '@/redux/authSlice'
 
 
 
@@ -19,8 +21,14 @@ const Login = () => {
         role:"",
 
     });
+    
+    //useSelector is a hook that allows you to extract data from the Redux store state, using a selector function.
+    const {loading} = useSelector(state=>state.auth);
+
+
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();//dispatch function is used to dispatch an action to the store 
     
     //this event handler is used to change the input field value;   
     const changeEventHandler = (e) =>{
@@ -31,6 +39,7 @@ const Login = () => {
         e.preventDefault();//prevent default form submission
     
         try {
+            dispatch(setLoading(true));
             const res = await axios.post(`${USER_API_ENDPOINT}/login`,input,{
                 headers:{
                     'Content-Type':'application/json',
@@ -44,11 +53,12 @@ const Login = () => {
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
+        } finally{
+            dispatch(setLoading(false));
         }
 
     }
 
-    const loading=false;
   return (
     <div>
         <Navbar/>
