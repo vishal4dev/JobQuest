@@ -87,7 +87,7 @@ export const login = async (req,res)=>{
         };
 
         //check if the user role is correct
-        if(user.role !== role){
+        if(role !== user.role){
             return res.status(400).json({
                 message:"Account does'nt exist with current role",
                 success:false
@@ -95,14 +95,17 @@ export const login = async (req,res)=>{
         };
 
         const tokenData = {
-            userId:user._id,//user._id is the unique identifier of the user in the database
+            userId:user._id 
         }
+
+        //user._id is the unique identifier of the user in the database
 
         const token = await jwt.sign(tokenData,process.env.SECRET_KEY,{expiresIn:'1d'});
          
 
         //send the user data and token to the client
         user = {
+            _id:user._id,
             fullname:user.fullname,
             email:user.email,
             phoneNumber:user.phoneNumber,
