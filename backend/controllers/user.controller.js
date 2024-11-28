@@ -100,7 +100,7 @@ export const login = async(req, res) => {
 
         //user._id is the unique identifier of the user in the database
 
-        const token = await jwt.sign(tokenData,process.env.SECRET_KEY,{expiresIn:'1d'});
+        const token = jwt.sign(tokenData,process.env.SECRET_KEY,{expiresIn:'1d'});
          
 
         //send the user data and token to the client
@@ -115,7 +115,7 @@ export const login = async(req, res) => {
         }
 
         //send or store the token in the cookie
-        return res.status(200).cookie("token",token,{maxAge:1*24*60*60*1000,httpOnly:true,sameSite:'strict'}).json({
+        return res.status(200).cookie("token",token,{maxAge:1*24*60*60*1000,httpOnly:true,sameSite:'none',secure:true}).json({
             message:`welcome ${user.fullname}`,
             user,
             success: true
